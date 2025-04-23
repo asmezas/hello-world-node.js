@@ -7,7 +7,7 @@
     "author": "Microsoft",
     "scripts": {
         "build": "babel src --out-dir dist",
-        "start": "node index.js",
+        "start": "node dist/index.js",
         "lint": "eslint",
         "format": "prettier --single-quote --write *.js"    
     },
