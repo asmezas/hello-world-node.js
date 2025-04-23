@@ -4,19 +4,34 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- main
+  branches:
+    include:
+      - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
+    versionSpec: '18.x'            # or whichever Node.js version you support
+  displayName: 'Use Node.js'
 
 - script: |
-    npm install --save-dev @babel/cli @babel/core @babel/preset-env
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+    npm ci                        # clean install based on lockfile
+  displayName: 'Install dependencies'
+
+- script: |
+    npm run build                 # transpile / compile step
+  displayName: 'Build'
+
+- script: |
+    npm test                      # if you have tests
+  displayName: 'Run tests'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: 'dist'         # output folder from your build script
+    artifactName: 'drop'
+  displayName: 'Publish artifacts'
+
